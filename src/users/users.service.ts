@@ -7,14 +7,24 @@ import { InjectModel } from '@nestjs/mongoose';
  
 
 @Injectable()
-export class UsersService { 
+export class UsersService {
 
   constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
-  create(createUserDto:  CreateUserDto) {
-    // const user = new this.userModel(createUserDto);
-    // return user.save();
-    return createUserDto;
+  async create(createUserDto: CreateUserDto) {
+    
+    const { username, email} = createUserDto;
+    const existByEmail = await this.checkifEmailExist(email);
+    const existByUsername = await this.checkifUsernameExist(username);
+    
+    if (existByEmail) {
+      throw new NotFoundException('Email already exist');
+    }
+    if (existByUsername) {
+      throw new NotFoundException('Username already exist');
+    }
+    const user = new this.userModel(createUserDto);
+    return user.save();
  
   }
 
@@ -30,9 +40,24 @@ export class UsersService {
     } else {
       return user;
     }
-
   }
+
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User | string> {
+    const { username = '', email = ''} = updateUserDto;
+    if (username !== '') {
+      const existByUsername = await this.checkifUsernameExist(username);
+      if (existByUsername) {
+        throw new NotFoundException('Username already exist');
+      }
+    }
+    if (email !== '') {
+      const existByEmail = await this.checkifEmailExist(email);
+      if (existByEmail) {
+        throw new NotFoundException('Email already exist');
+      }
+    }
+    
+    
     const exitingUser = await this.userModel
       .findByIdAndUpdate({ _id: id }, { $set: updateUserDto }, { new: true })
       .exec();
@@ -46,4 +71,31 @@ export class UsersService {
   remove(id: string) {
     return `This action removes a #${id} user`;
   }
+
+  async getUserByEmail(email: string): Promise<User | string> {
+    const user = await this.userModel.findOne({ email: email }).exec();
+    if (!user) {
+      throw new NotFoundException('User not found');
+    } else {
+      return user;
+    }
+  }
+  async checkifEmailExist(email: string): Promise<boolean> {
+    const user = await this.userModel.findOne({ email: email }).exec();
+    if (!user) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  async checkifUsernameExist(username: string): Promise<boolean> {
+    const user = await this.userModel.findOne({ username: username }).exec();
+    if (!user) {
+      return false;
+    } else {
+      return true;
+    }
+
+  }
+
 }

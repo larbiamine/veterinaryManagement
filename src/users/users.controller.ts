@@ -2,16 +2,22 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ValidationPipe, UseP
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AES } from 'crypto-js';
+import { MyConfigService } from 'src/config/config.service';
  
+// get env encryption key from .env file
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService, private readonly configService: MyConfigService) {}
  
-  @Post()
+  @Post("register")
   @UsePipes(new ValidationPipe())
   create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+    const { password, ...rest } = createUserDto;
+    const EncryptionKey = this.configService.getEncryptionKey();
+    const encryptedPassword = AES.encrypt(password, EncryptionKey).toString();
+    return this.usersService.create({ ...rest, password: encryptedPassword });
   }
   // create(@Body() body: any) {
   //   return this.usersService.create(body);
@@ -26,6 +32,10 @@ export class UsersController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
+  }
+  @Get('userEmail/:email')
+  findOneByEmail(@Param('email') email: string) {
+    return this.usersService.getUserByEmail(email);
   }
 
   @Patch(':id')
