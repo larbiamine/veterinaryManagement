@@ -7,5 +7,5 @@ import { MongooseModule } from '@nestjs/mongoose';
   imports: [UsersModule, MongooseModule.forRoot('mongodb://127.0.0.1:27017/lightweight'),],
   controllers: [AppController],
   providers: [AppService],
-})
+}) 
 export class AppModule {} 
