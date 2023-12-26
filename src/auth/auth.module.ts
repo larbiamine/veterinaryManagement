@@ -8,13 +8,26 @@ import { MyConfigModule } from 'src/config/config.module';
 import { UsersService } from 'src/users/users.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/users/entities/user.entity';
-import { UsersController } from 'src/users/users.controller';
+import { LocalStrategy } from './local.strategy';
 
 @Module({
-
-  imports: [UsersModule, JwtModule,MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), MyConfigModule], // include UsersModule in the imports array
-  controllers: [UsersController, AuthController],
-  providers: [AuthService, UsersService],
+  imports: [
+    UsersModule,
+    MyConfigModule,
+    JwtModule.registerAsync({
+      imports: [MyConfigModule], 
+      useFactory: async (configService: MyConfigService) => ({
+        secret: configService.getJWTKey(),
+        signOptions: { expiresIn: '60s' },
+      }),
+      inject: [MyConfigService],
+    }),
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    
+  ], 
+  // include UsersModule in the imports array
+  controllers: [AuthController],
+  providers: [AuthService, UsersService, LocalStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}
