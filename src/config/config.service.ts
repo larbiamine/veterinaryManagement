@@ -9,5 +9,8 @@ export class MyConfigService {
   getEncryptionKey(): string {
     return this.configService.get<string>('ENCRYPTION_KEY');
   }
+  getJWTKey(): string {
+    return this.configService.get<string>('JWT_SECRET');
+  }
 
 }

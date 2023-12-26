@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto } from '../auth/dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { Model } from 'mongoose';
@@ -33,8 +33,16 @@ export class UsersService {
     return this.userModel.find().exec();
   }
 
-  async findOne(id: string): Promise<User | string> {
+  async findOne(id: string): Promise<User | null> {
     const user = await this.userModel.findOne({_id:id}).exec();
+    if (!user) {
+      throw new NotFoundException('User not found');
+    } else {
+      return user;
+    }
+  }
+  async findByUserName(username: string): Promise<User | null> {
+    const user = await this.userModel.findOne({username:username}).exec();
     if (!user) {
       throw new NotFoundException('User not found');
     } else {
