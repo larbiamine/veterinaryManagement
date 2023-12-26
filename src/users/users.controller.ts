@@ -9,8 +9,12 @@ import { MyConfigService } from 'src/config/config.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService, private readonly configService: MyConfigService) {}
- 
+  constructor(
+    private readonly usersService: UsersService, 
+    private readonly configService: MyConfigService
+  ) {}
+  
+  // Register user
   @Post("register")
   @UsePipes(new ValidationPipe())
   create(@Body() createUserDto: CreateUserDto) {
@@ -19,6 +23,9 @@ export class UsersController {
     const encryptedPassword = AES.encrypt(password, EncryptionKey).toString();
     return this.usersService.create({ ...rest, password: encryptedPassword });
   }
+
+
+
   // create(@Body() body: any) {
   //   return this.usersService.create(body);
   // }

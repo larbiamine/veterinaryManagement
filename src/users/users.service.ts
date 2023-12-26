@@ -33,7 +33,7 @@ export class UsersService {
     return this.userModel.find().exec();
   }
 
-  async findOne(id: string): Promise<User | string> {
+  async findOne(id: string): Promise<User | null> {
     const user = await this.userModel.findOne({_id:id}).exec();
     if (!user) {
       throw new NotFoundException('User not found');
