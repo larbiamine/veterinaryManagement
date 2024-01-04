@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 import { UsersService } from 'src/users/users.service';
 import {AES, enc} from 'crypto-js';
 import { MyConfigService } from 'src/config/config.service';
+import { MyJwtService } from 'src/jwt/jwt.service';
 @Injectable()
 export class AuthService {
     constructor(
         private usersService: UsersService,
-        private jwtService: JwtService,
+        private myJwtService: MyJwtService,
         private readonly configService: MyConfigService
     ) {}
 
@@ -26,7 +27,7 @@ export class AuthService {
     async login(user: any) {
         const payload = {username : user.username, sub: user.id}
         return {
-            token: this.jwtService.sign(payload)
+            token: await this.myJwtService.generateToken(payload)
         };
     }
 

@@ -6,7 +6,7 @@ import { MyConfigModule } from 'src/config/config.module';
 import { UsersService } from 'src/users/users.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/users/entities/user.entity';
-import { LocalStrategy } from './local.strategy';
+import { LocalStrategy } from '../jwt/local.strategy';
 import { MyJwtModule } from 'src/jwt/jwt.module';
 
 @Module({
