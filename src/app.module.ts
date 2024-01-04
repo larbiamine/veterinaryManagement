@@ -2,10 +2,14 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
-import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
+import { DbModule } from './db/db.module';
+import { MyJwtModule } from './jwt/jwt.module';
+
+
+ 
 @Module({
-  imports: [AuthModule, UsersModule, MongooseModule.forRoot('mongodb://127.0.0.1:27017/lightweight'), ],
+  imports: [AuthModule, UsersModule, DbModule, MyJwtModule, ],
   controllers: [AppController],
   providers: [AppService],
 }) 
