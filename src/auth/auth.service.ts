@@ -20,15 +20,18 @@ export class AuthService {
         const decryptedPassword = AES.decrypt(user.password, EncryptionKey).toString(enc.Utf8);
         
         if (user && decryptedPassword === password) {
-            return {id: user._id.toString(), username: user.username, email: user.email};
+            return {id: user._id.toString(), username: user.username, email: user.email, isAdmin:user.isAdmin};
         }
         return null;
     }
     async login(user: any) {
-        const payload = {username : user.username, sub: user.id}
+        const payload = {username : user.username, id: user.id, isAdmin: user.isAdmin}
+        console.log("🆘 || file: auth.service.ts:33 || payload:", payload)
         return {
             token: await this.myJwtService.generateToken(payload)
         };
+
+
     }
 
 
