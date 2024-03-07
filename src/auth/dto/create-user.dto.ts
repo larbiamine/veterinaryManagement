@@ -1,5 +1,6 @@
 // create-user.dto.ts
 
+import { Optional } from '@nestjs/common';
 import { IsNotEmpty, IsString, IsEmail, MinLength } from 'class-validator';
 
 export class CreateUserDto {
@@ -15,4 +16,7 @@ export class CreateUserDto {
   @IsString({ message: 'Password must be a string' })
   @MinLength(6, { message: 'Password must be at least 6 characters long' })
   readonly password: string;
+
+  @Optional()
+  isAdmin: boolean;
 }
