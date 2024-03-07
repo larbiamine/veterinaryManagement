@@ -9,11 +9,13 @@ import { MyConfigService } from 'src/config/config.service';
 import { MyJwtService } from 'src/jwt/jwt.service';
 import { MyJwtModule } from 'src/jwt/jwt.module';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth/jwt-auth.guard';
+import { PrismaModule } from 'src/prisma/prisma.module';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), MyConfigModule, MyJwtModule ],
+  imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), MyConfigModule, MyJwtModule, PrismaModule ],
   controllers: [UsersController],
-  providers: [UsersService, MyConfigService, JwtAuthGuard],
+  providers: [UsersService, MyConfigService, PrismaService, JwtAuthGuard],
   exports: [MyConfigService],
 })
 export class UsersModule {}

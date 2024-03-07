@@ -5,6 +5,7 @@ import { UsersService } from 'src/users/users.service';
 import {AES, enc} from 'crypto-js';
 import { MyConfigService } from 'src/config/config.service';
 import { MyJwtService } from 'src/jwt/jwt.service';
+import { Prisma } from '@prisma/client';
 @Injectable()
 export class AuthService {
     constructor(
@@ -13,14 +14,14 @@ export class AuthService {
         private readonly configService: MyConfigService
     ) {}
 
-    async validateUser(username: string, password: string): Promise<any> {
+    async validateUser(username: string, password: string): Promise<Prisma.UserCreateInput | null> {
         
         const user = await this.usersService.findByUserName(username);        
         const EncryptionKey = this.configService.getEncryptionKey();
         const decryptedPassword = AES.decrypt(user.password, EncryptionKey).toString(enc.Utf8);
         
         if (user && decryptedPassword === password) {
-            return {id: user._id.toString(), username: user.username, email: user.email, isAdmin:user.isAdmin};
+            return user;
         }
         return null;
     }
@@ -40,6 +41,13 @@ export class AuthService {
         const EncryptionKey = this.configService.getEncryptionKey();
         const encryptedPassword = AES.encrypt(password, EncryptionKey).toString();
         const user = await this.usersService.create({ ...rest, password: encryptedPassword });
+        return user;
+    }
+    async registerAdmin(createUserDto: CreateUserDto){
+        const { password, ...rest } = createUserDto;
+        const EncryptionKey = this.configService.getEncryptionKey();
+        const encryptedPassword = AES.encrypt(password, EncryptionKey).toString();
+        const user = await this.usersService.createAdmin({ ...rest, password: encryptedPassword });
         return user;
     }
 }

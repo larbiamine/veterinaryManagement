@@ -17,13 +17,17 @@ export class AuthController {
   @UseGuards(AuthGuard('local'))
   @Post('login')
   async login(@Request() req) {
-    const user = req.user
 
+    const user = req.user
     return this.authService.login(user);
   }
 
   @Post('register')
   async register(@Body() createUserDto: CreateUserDto) {
     return this.authService.register(createUserDto);
+  }
+  @Post('registeradmin')
+  async registerAdmin(@Body() createUserDto: CreateUserDto) {
+    return this.authService.registerAdmin(createUserDto);
   }
 }

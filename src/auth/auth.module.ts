@@ -8,6 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/users/entities/user.entity';
 import { LocalStrategy } from '../jwt/local.strategy';
 import { MyJwtModule } from 'src/jwt/jwt.module';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { MyJwtModule } from 'src/jwt/jwt.module';
   ], 
   // include UsersModule in the imports array
   controllers: [AuthController],
-  providers: [AuthService, UsersService, LocalStrategy],
+  providers: [AuthService, UsersService, LocalStrategy, PrismaService],
   exports: [AuthService],
 })
 export class AuthModule {}
