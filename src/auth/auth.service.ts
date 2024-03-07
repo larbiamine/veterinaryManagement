@@ -15,7 +15,6 @@ export class AuthService {
     ) {}
 
     async validateUser(username: string, password: string): Promise<Prisma.UserCreateInput | null> {
-        
         const user = await this.usersService.findByUserName(username);        
         const EncryptionKey = this.configService.getEncryptionKey();
         const decryptedPassword = AES.decrypt(user.password, EncryptionKey).toString(enc.Utf8);

@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Prisma } from "@prisma/client";
 import { Document } from "mongoose";
 
 @Schema()
@@ -13,5 +14,7 @@ export class User extends Document {
     isAdmin: boolean;
 
 }
+
+export type PrismaUser = Prisma.UserCreateInput;
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from '../auth/dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+import { PrismaUser, User } from './entities/user.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -55,14 +55,15 @@ export class UsersService {
     return user;
   }
 
-  findAll() {
-    return false;
+  async findAll(): Promise<PrismaUser[]>{
+    const users = await this.prisma.user.findMany();
+    return users;
   }
 
   async findOne(id: string): Promise<User | null> {
     return null;
   }
-  async findByUserName(username: string): Promise<Prisma.UserCreateInput | null> {
+  async findByUserName(username: string): Promise<PrismaUser | null> {
     const user = await this.prisma.user.findUnique({
       where: {
         username: username ,
@@ -82,7 +83,7 @@ export class UsersService {
     return `This action removes a #${id} user`;
   }
 
-  async getUserByEmail(email: string): Promise<Prisma.UserCreateInput | null> {
+  async getUserByEmail(email: string): Promise<PrismaUser | null> {
     const user = await this.prisma.user.findUnique({
       where: {
         email: email ,
