@@ -57,6 +57,9 @@ export class UsersService {
 
   async findAll(): Promise<PrismaUser[]>{
     const users = await this.prisma.user.findMany();
+
+    console.log("🆘 || users:", users)
+
     return users;
   }
 
@@ -79,8 +82,29 @@ export class UsersService {
     return 'false';
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} user`;
+  async remove(id: number) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: id ,
+      },
+    });
+
+    console.log("🆘 || user:", user)
+    return "removed";
+
+
+
+    try {
+      await this.prisma.user.delete({
+        where: {
+          id: id ,
+        },
+      });
+      return `success: user with id ${id} has been deleted`
+    } catch (error) {
+      return `error: user with id ${id} not found`
+    }  
+
   }
 
   async getUserByEmail(email: string): Promise<PrismaUser | null> {
