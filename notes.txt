@@ -1,0 +1,32 @@
+
+Owner:<---btw this is a table                                            
+    FirstName:                                          
+    LastName:                                          
+    Phone number:                                       
+    id card number                                     
+    city:                                               
+    adresse:                                            
+
+Vet:<---btw this is a table                                           
+    FirstName:                                          
+    LastName:                                          
+    Phone number:                                       
+    id card number                                     
+    city:                                               
+    adresse:                                            
+ 
+Animal<---btw this is a table
+    name
+    species
+    race
+    gender
+    age
+    date of birth ?? 
+    distinctive qualities 
+    ownerId
+    vetId
+
+
+    we go code now  ok 
+
+    wechh 
