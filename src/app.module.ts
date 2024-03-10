@@ -6,11 +6,12 @@ import { AuthModule } from './auth/auth.module';
 import { DbModule } from './db/db.module';
 import { MyJwtModule } from './jwt/jwt.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { OwnerModule } from './owner/owner.module';
 
 
  
 @Module({
-  imports: [AuthModule, UsersModule, DbModule, MyJwtModule, PrismaModule, ],
+  imports: [AuthModule, UsersModule, DbModule, MyJwtModule, PrismaModule, OwnerModule, ],
   controllers: [AppController],
   providers: [AppService],
 }) 
