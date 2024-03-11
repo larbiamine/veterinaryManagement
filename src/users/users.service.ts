@@ -117,8 +117,6 @@ export class UsersService {
       },
     });
 
-    console.log("🆘 || existingUser:", typeof existingUser)
-
     return existingUser.length > 0;
   }
   async checkifUsernameExist(username: string): Promise<boolean> {
