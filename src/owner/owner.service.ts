@@ -3,10 +3,12 @@ import { PrismaOwner } from './entities/owner.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateOwnerDto } from './dto/create-owner.dto';
 import { UpdateOwnerDto } from './dto/update-owner.dto';
+import { UtilitiesService } from 'src/utilities/utilities.service';
 
 @Injectable()
 export class ownerService {
-  constructor(private prisma: PrismaService) {}
+  
+  constructor(private prisma: PrismaService, private readonly utilitiesService: UtilitiesService) {}
 
   async findAll(): Promise<PrismaOwner[]> {
     const owner = await this.prisma.owner.findMany();
@@ -14,6 +16,11 @@ export class ownerService {
   }
   async create(createOwnerDto: CreateOwnerDto) {
     const { idCardNumber } = createOwnerDto;
+
+    if (!this.utilitiesService.areAllFieldsStrings(createOwnerDto)) {
+      throw new NotFoundException('all fields should be a string');
+
+    }
     const existIdCardNumber = await this.checkifIdCardNumberExist(idCardNumber);
 
     if (existIdCardNumber) {
