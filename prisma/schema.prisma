@@ -38,7 +38,7 @@ model Vet {
     id Int @default(autoincrement()) @id
     firstName String 
     lastName String
-    PhoneNumber String
+    phoneNumber String
     idCardNumber String
     city String
     address String
