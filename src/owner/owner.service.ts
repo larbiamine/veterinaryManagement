@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaOwner } from './entities/owner.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateOwnerDto } from './dto/create-owner.dto';
+import { UpdateOwnerDto } from './dto/update-owner.dto';
 
 @Injectable()
 export class ownerService {
@@ -36,6 +37,36 @@ export class ownerService {
     }
 
     return owner;
+  }
+
+  async delete(id: number): Promise<{ message: string }>{
+    const owner = await this.prisma.owner.findUnique({
+      where: { id },
+    });
+
+    if (!owner) {
+      throw new NotFoundException('Owner not found');
+    } else {
+      await this.prisma.owner.delete({
+        where: { id },
+      });
+      return { message: 'Owner deleted successfully' };
+    }
+  }
+  async update(id: number, updateOwnerDto: UpdateOwnerDto): Promise<{ message: string }>{
+    const owner = await this.prisma.owner.findUnique({
+      where: { id },
+    });
+
+    if (!owner) {
+      throw new NotFoundException('Owner not found');
+    } else {
+      await this.prisma.owner.update({
+        where: { id },
+        data: updateOwnerDto,
+      });
+      return { message: 'Owner updated successfully' };
+    }
   }
 
   async checkifIdCardNumberExist(icn: string): Promise<boolean> {
