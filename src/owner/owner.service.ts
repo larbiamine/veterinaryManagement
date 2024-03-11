@@ -25,7 +25,6 @@ export class ownerService {
     });
     return owner;
   }
-
   async findOne(id: number): Promise<PrismaOwner> {
     const owner = await this.prisma.owner.findUnique({
       where: {
@@ -38,7 +37,6 @@ export class ownerService {
 
     return owner;
   }
-
   async delete(id: number): Promise<{ message: string }>{
     const owner = await this.prisma.owner.findUnique({
       where: { id },
@@ -61,6 +59,14 @@ export class ownerService {
     if (!owner) {
       throw new NotFoundException('Owner not found');
     } else {
+
+      const { idCardNumber } = updateOwnerDto;
+      const existIdCardNumber = await this.checkifIdCardNumberExist(idCardNumber);
+  
+      if (existIdCardNumber) {
+        throw new NotFoundException('IdCardNumber already exist');
+      }
+
       await this.prisma.owner.update({
         where: { id },
         data: updateOwnerDto,
@@ -68,7 +74,6 @@ export class ownerService {
       return { message: 'Owner updated successfully' };
     }
   }
-
   async checkifIdCardNumberExist(icn: string): Promise<boolean> {
     const existingOwner = await this.prisma.owner.findMany({
       where: {
