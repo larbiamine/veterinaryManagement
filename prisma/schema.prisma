@@ -26,21 +26,22 @@ model User {
 model Owner {
     id Int @default(autoincrement()) @id
     firstName String 
-    fastName String
-    PhoneNumber String
+    lastName String
+    phoneNumber String
+    email String? @unique
     idCardNumber String
     city String
-    adresse String
+    address String
     animals Animal[] 
 }                                          
 model Vet {
     id Int @default(autoincrement()) @id
     firstName String 
-    fastName String
+    lastName String
     PhoneNumber String
     idCardNumber String
     city String
-    adresse String
+    address String
     animals Animal[] 
 }                                          
 
