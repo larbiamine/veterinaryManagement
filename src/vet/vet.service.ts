@@ -16,10 +16,11 @@ export class VetService {
   } 
   async create(createVetDto: CreateVetDto) {
     const { idCardNumber } = createVetDto;
-    if (!this.utilitiesService.isString(idCardNumber)) {
-      throw new NotFoundException('IdCardNumber should be a string');
+    if (!this.utilitiesService.areAllFieldsStrings(createVetDto)) {
+      throw new NotFoundException('all fields should be a string');
 
     }
+
     const existIdCardNumber = await this.checkifIdCardNumberExist(idCardNumber);
 
     if (existIdCardNumber) {
