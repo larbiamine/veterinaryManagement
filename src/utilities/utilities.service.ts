@@ -6,9 +6,9 @@ export class UtilitiesService {
     isString(idCardNumber: any): boolean {
         return typeof idCardNumber === 'string';
     }
-    areAllFieldsStrings(obj: any): boolean {
+    areAllFieldsStrings(obj: any, exceptions: string[]): boolean {
         for (let key in obj) {
-            if (key == "id") {
+            if (key in exceptions) {
                 continue;
             }
             if (this.isString(obj[key]) === false){

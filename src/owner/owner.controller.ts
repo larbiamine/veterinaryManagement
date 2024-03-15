@@ -3,7 +3,6 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth/jwt-auth.guard';
 import { ownerService } from './owner.service';
 import { CreateOwnerDto } from './dto/create-owner.dto';
 import { UpdateOwnerDto } from './dto/update-owner.dto';
-import { parse } from 'path';
 
 @Controller('owner')
 export class OwnerController {

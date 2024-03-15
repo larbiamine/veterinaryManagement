@@ -54,13 +54,15 @@ model Vet {
     gender Gender
     age String
     dateOfBirth DateTime 
-    distinctiveQualities String
-    owner Owner @relation(fields : [ownerId], references :[id])
+    distinctiveQualities String[]
+    owner Owner? @relation(fields : [ownerId], references :[id])
     ownerId Int
-    vet Vet @relation(fields : [vetId], references: [id])
+    vet Vet? @relation(fields : [vetId], references: [id])
     vetId Int 
  }
  enum Gender{
   Male
   Female
+  male
+  female
 }

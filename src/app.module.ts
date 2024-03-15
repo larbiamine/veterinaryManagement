@@ -9,11 +9,10 @@ import { PrismaModule } from './prisma/prisma.module';
 import { OwnerModule } from './owner/owner.module';
 import { VetModule } from './vet/vet.module';
 import { UtilitiesModule } from './utilities/utilities.module';
+import { AnimalModule } from './animal/animal.module';
 
-
- 
 @Module({
-  imports: [AuthModule, UsersModule, DbModule, MyJwtModule, PrismaModule, OwnerModule, VetModule, UtilitiesModule, ],
+  imports: [AuthModule, UsersModule, DbModule, MyJwtModule, PrismaModule, OwnerModule, VetModule, UtilitiesModule, AnimalModule,  ],
   controllers: [AppController],
   providers: [AppService],
 }) 

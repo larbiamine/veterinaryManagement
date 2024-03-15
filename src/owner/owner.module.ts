@@ -7,7 +7,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { UtilitiesModule } from 'src/utilities/utilities.module';
 
 @Module({
-    imports: [ MyJwtModule,UtilitiesModule, PrismaModule ],
+    imports: [ MyJwtModule, UtilitiesModule, PrismaModule ],
     controllers: [OwnerController],
     providers: [ownerService, PrismaService]
 })
