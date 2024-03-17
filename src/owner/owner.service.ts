@@ -17,6 +17,9 @@ export class ownerService {
   async create(createOwnerDto: CreateOwnerDto) {
     const { idCardNumber } = createOwnerDto;
 
+    console.log("🆘 || createOwnerDto:", createOwnerDto)
+
+
     if (!this.utilitiesService.areAllFieldsStrings(createOwnerDto, ['id'])) {
       throw new NotFoundException('all fields should be a string');
 
