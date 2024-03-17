@@ -3,7 +3,7 @@
 import { IsString, IsInt, IsOptional, IsArray, ValidateNested, IsNotEmpty, IsEmail } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Optional } from '@nestjs/common';
-// import { CreateAnimalDto } from './create-animal.dto'; // Assuming you have Animal DTO defined
+import { CreateAnimalDto } from 'src/animal/dto/create-animal.dto';
 
 export class CreateOwnerDto {
   @IsNotEmpty({ message: 'Firstname is required' })
@@ -37,10 +37,10 @@ export class CreateOwnerDto {
 
   // @IsOptional()
   // @IsArray()
-  // // @ValidateNested({ each: true })
-  // // @Type(() => CreateAnimalDto) // Assuming you have Animal DTO defined
-  // // animals?: CreateAnimalDto[];
-  // animals?: any[];
+  // @ValidateNested({ each: true })
+  // @Type(() => CreateAnimalDto) // Assuming you have Animal DTO defined
+  // animals?: CreateAnimalDto[];
+  
 }
 
 

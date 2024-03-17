@@ -11,13 +11,13 @@ export class ownerService {
   constructor(private prisma: PrismaService, private readonly utilitiesService: UtilitiesService) {}
 
   async findAll(): Promise<PrismaOwner[]> {
-    const owner = await this.prisma.owner.findMany();
-    return owner;
+    const owners = await this.prisma.owner.findMany();
+    return owners;
   }
   async create(createOwnerDto: CreateOwnerDto) {
     const { idCardNumber } = createOwnerDto;
 
-    if (!this.utilitiesService.areAllFieldsStrings(createOwnerDto)) {
+    if (!this.utilitiesService.areAllFieldsStrings(createOwnerDto, ['id'])) {
       throw new NotFoundException('all fields should be a string');
 
     }

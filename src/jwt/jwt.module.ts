@@ -12,7 +12,7 @@ import { MyJwtService } from './jwt.service';
         imports: [MyConfigModule], 
         useFactory: async (configService: MyConfigService) => ({
           secret: configService.getJWTKey(),
-          signOptions: { expiresIn: '24h' },
+          signOptions: { expiresIn: '3d' },
         }),
         inject: [MyConfigService],
       }),
