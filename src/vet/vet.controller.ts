@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth/jwt-auth.guard';
 import { UpdateVetDto } from './dto/update-vet.dto';
 import { CreateVetDto } from './dto/create-vet.dto';
@@ -25,21 +25,21 @@ export class VetController {
 
     @UseGuards(JwtAuthGuard)
     @Get(':id')
-    findOne(@Param('id') id:string) {
+    findOne(@Param('id', ParseIntPipe) id:string) {
       const newId = parseInt(id);
       return this.vetService.findOne(newId);
     }
 
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
-    deleteOne(@Param('id') id:string) {
+    deleteOne(@Param('id', ParseIntPipe) id:string) {
       const newId = parseInt(id);
       return this.vetService.delete(newId);
     }
 
     @UseGuards(JwtAuthGuard)
     @Patch(':id')
-    update(@Param('id') id:string, @Body() updateVetDto: UpdateVetDto) {
+    update(@Param('id', ParseIntPipe) id:string, @Body() updateVetDto: UpdateVetDto) {
       const newId = parseInt(id);
       return this.vetService.update(newId, updateVetDto);
     }
