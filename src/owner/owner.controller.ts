@@ -3,8 +3,8 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth/jwt-auth.guard';
 import { ownerService } from './owner.service';
 import { CreateOwnerDto } from './dto/create-owner.dto';
 import { UpdateOwnerDto } from './dto/update-owner.dto';
-import { ParseStringPipe } from 'src/utilities/parseString.pipe';
-import { ParseDatePipe } from 'src/utilities/parseDate.pipe';
+import { ParseStringPipe } from 'src/pipes/parseString.pipe';
+import { ParseDatePipe } from 'src/pipes/parseDate.pipe';
 
 @Controller('owner')
 export class OwnerController {
