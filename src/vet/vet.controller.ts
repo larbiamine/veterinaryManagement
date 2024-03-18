@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, UsePipes } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth/jwt-auth.guard';
 import { UpdateVetDto } from './dto/update-vet.dto';
 import { CreateVetDto } from './dto/create-vet.dto';
 import { VetService } from './vet.service';
+import { ParseStringPipe } from 'src/pipes/parseString.pipe';
 
 @Controller('vet')
 export class VetController {
@@ -17,6 +18,7 @@ export class VetController {
       return this.vetService.findAll();
     }
 
+    @UsePipes(new ParseStringPipe(['id']))
     @UseGuards(JwtAuthGuard)
     @Post()
     async addVet(@Body() createVetDto: CreateVetDto) {

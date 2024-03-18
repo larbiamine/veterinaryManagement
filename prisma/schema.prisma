@@ -39,7 +39,6 @@ model Vet {
     firstName String 
     lastName String
     phoneNumber String
-    idCardNumber String
     city String
     address String
     animals Animal[] 
