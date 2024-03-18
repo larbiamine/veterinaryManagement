@@ -4,6 +4,7 @@ import { ownerService } from './owner.service';
 import { CreateOwnerDto } from './dto/create-owner.dto';
 import { UpdateOwnerDto } from './dto/update-owner.dto';
 import { ParseStringPipe } from 'src/pipes/parseString.pipe';
+import { ParseIdIntPipe } from 'src/pipes/parseInt.pipe';
 
 @Controller('owner')
 export class OwnerController {
@@ -18,6 +19,8 @@ export class OwnerController {
     }
 
     @UsePipes(new ParseStringPipe(['id']))
+    @UsePipes(new ParseIdIntPipe(['id']))
+
     // @UsePipes(new ParseDatePipe([]))
     @UseGuards(JwtAuthGuard)
     @Post()

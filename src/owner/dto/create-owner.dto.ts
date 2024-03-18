@@ -20,8 +20,9 @@ export class CreateOwnerDto {
 
   @IsEmail({}, { message: 'Invalid email format' })
   @IsNotEmpty({ message: 'email is required' })
+  @IsOptional()
   @IsString()
-  email: string;
+  email?: string;
 
   @IsNotEmpty({ message: 'idCardNumber is required' })
   @IsString()
