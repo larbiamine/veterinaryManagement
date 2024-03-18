@@ -24,8 +24,26 @@ export class AnimalService {
     return `This action returns a #${id} animal`;
   }
 
-  update(id: number, updateAnimalDto: UpdateAnimalDto) {
-    return `This action updates a #${id} animal`;
+  async update(findId: number, updateAnimalDto: UpdateAnimalDto) {
+
+    if ('id' in updateAnimalDto) {
+      throw new NotFoundException('id cannot be updated');
+    }
+
+    const animal = await this.prisma.animal.findUnique({
+      where: { id: findId },
+    });
+
+    if (!animal) {
+      throw new NotFoundException('Animal not found');
+    } else {
+
+      await this.prisma.animal.update({
+        where: { id: findId },
+        data: updateAnimalDto,
+      });
+      return { message: 'Animal updated successfully' };
+    }
   }
 
   remove(id: number) {

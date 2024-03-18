@@ -62,6 +62,9 @@ export class ownerService {
     }
   }
   async update(id: number, updateOwnerDto: UpdateOwnerDto): Promise<{ message: string }>{
+    if ('id' in updateOwnerDto) {
+      throw new NotFoundException('id cannot be updated');
+    }
     const owner = await this.prisma.owner.findUnique({
       where: { id },
     });
