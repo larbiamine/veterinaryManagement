@@ -1,22 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAnimalDto } from './dto/create-animal.dto';
 import { UpdateAnimalDto } from './dto/update-animal.dto';
-import {  PrismaUncheckedAnimal } from './entities/animal.entity';
+import { PrismaUncheckedAnimal } from './entities/animal.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UtilitiesService } from 'src/utilities/utilities.service';
 
 @Injectable()
 export class AnimalService {
-  constructor(
-    private prisma: PrismaService,
-    private readonly utilitiesService: UtilitiesService,
-  ) {}
+  constructor(private prisma: PrismaService) {}
 
   async create(createAnimalDto: CreateAnimalDto) {
-    // if (!this.utilitiesService.areAllFieldsStrings(CreateOwnerDto, ['id', 'ownerId', 'vetId'])) {
-    //   throw new NotFoundException('all fields should be a string');
-    // }
-    // createAnimalDto.dateOfBirth = new Date(createAnimalDto.dateOfBirth);
     const animal = await this.prisma.animal.create({
       data: createAnimalDto,
     });
@@ -28,15 +20,53 @@ export class AnimalService {
     return animals;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} animal`;
+  async findOne(id: number) {
+    const animal = await this.prisma.animal.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!animal) {
+      throw new NotFoundException('animal not found');
+    }
+
+    return animal;
   }
 
-  update(id: number, updateAnimalDto: UpdateAnimalDto) {
-    return `This action updates a #${id} animal`;
+  async update(findId: number, updateAnimalDto: UpdateAnimalDto) {
+
+    if ('id' in updateAnimalDto) {
+      throw new NotFoundException('id cannot be updated');
+    }
+
+    const animal = await this.prisma.animal.findUnique({
+      where: { id: findId },
+    });
+
+    if (!animal) {
+      throw new NotFoundException('Animal not found');
+    } else {
+
+      await this.prisma.animal.update({
+        where: { id: findId },
+        data: updateAnimalDto,
+      });
+      return { message: 'Animal updated successfully' };
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} animal`;
+  async remove(id: number) {
+    const animal = await this.prisma.animal.findUnique({
+      where: { id },
+    });
+
+    if (!animal) {
+      throw new NotFoundException('animal not found');
+    } else {
+      await this.prisma.animal.delete({
+        where: { id },
+      });
+      return { message: 'animal deleted successfully' };
+    }
   }
 }

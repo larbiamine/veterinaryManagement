@@ -25,16 +25,14 @@ export class VetController {
 
     @UseGuards(JwtAuthGuard)
     @Get(':id')
-    findOne(@Param('id', ParseIntPipe) id:string) {
-      const newId = parseInt(id);
-      return this.vetService.findOne(newId);
+    findOne(@Param('id', ParseIntPipe) id:number) {
+      return this.vetService.findOne(id);
     }
 
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
-    deleteOne(@Param('id', ParseIntPipe) id:string) {
-      const newId = parseInt(id);
-      return this.vetService.delete(newId);
+    deleteOne(@Param('id', ParseIntPipe) id:number) {
+      return this.vetService.delete(id);
     }
 
     @UseGuards(JwtAuthGuard)

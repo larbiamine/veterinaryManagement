@@ -59,6 +59,9 @@ export class VetService {
     }
   }
   async update(id: number, updateVetDto: UpdateVetDto): Promise<{ message: string }>{
+    if ('id' in updateVetDto) {
+      throw new NotFoundException('id cannot be updated');
+    }
     const vet = await this.prisma.vet.findUnique({
       where: { id },
     });
@@ -69,8 +72,6 @@ export class VetService {
 
       const { idCardNumber } = updateVetDto;
       // check if idCardNumber is string
-
-
 
       const existIdCardNumber = await this.checkifIdCardNumberExist(idCardNumber);
   
@@ -85,7 +86,7 @@ export class VetService {
       return { message: 'Vet updated successfully' };
     }
   }
-  async checkifIdCardNumberExist(icn: string): Promise<boolean> {
+  private async checkifIdCardNumberExist(icn: string): Promise<boolean> {
     const existingVet = await this.prisma.vet.findMany({
       where: {
         idCardNumber: { equals: icn },

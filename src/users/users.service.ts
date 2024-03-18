@@ -74,6 +74,9 @@ export class UsersService {
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<User | string> {
+    if ('id' in updateUserDto) {
+      throw new NotFoundException('id cannot be updated');
+    }
     return 'false';
   }
 

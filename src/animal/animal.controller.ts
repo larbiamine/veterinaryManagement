@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UsePipes, ParseIntPipe } from '@nestjs/common';
 import { AnimalService } from './animal.service';
 import { CreateAnimalDto } from './dto/create-animal.dto';
 import { UpdateAnimalDto } from './dto/update-animal.dto';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth/jwt-auth.guard';
+import { ParseDatePipe } from 'src/pipes/parseDate.pipe';
+import { ParseStringPipe } from 'src/pipes/parseString.pipe';
+import { ParseIdIntPipe } from 'src/pipes/parseInt.pipe';
 
 @Controller('animal')
 export class AnimalController {
@@ -11,8 +14,11 @@ export class AnimalController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ParseStringPipe(['id',"ownerId", "vetId", "distinctiveQualities"]))
+  @UsePipes(new ParseIdIntPipe(['id', "ownerId", "vetId"]))
+  @UsePipes(new ParseDatePipe([], 'dateOfBirth'))
   create(@Body() createAnimalDto: CreateAnimalDto) {
-    console.log("🆘 || createAnimalDto:", createAnimalDto)
     return this.animalService.create(createAnimalDto);
   }
 
@@ -29,6 +35,9 @@ export class AnimalController {
   }
 
   @Patch(':id')
+  @UsePipes(new ParseStringPipe(['id',"ownerId", "vetId", "distinctiveQualities"]))
+  @UsePipes(new ParseIdIntPipe(['id', "ownerId", "vetId"]))
+  @UsePipes(new ParseDatePipe([], 'dateOfBirth'))
   update(@Param('id', ParseIntPipe) id: string, @Body() updateAnimalDto: UpdateAnimalDto) {
     return this.animalService.update(+id, updateAnimalDto);
   }
