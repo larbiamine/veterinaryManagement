@@ -15,15 +15,20 @@ export class ownerService {
     return owners;
   }
   async create(createOwnerDto: CreateOwnerDto) {
-    const { idCardNumber } = createOwnerDto;
-
-    console.log("🆘 || createOwnerDto:", createOwnerDto)
-
+    const { idCardNumber, email } = createOwnerDto;
 
     if (!this.utilitiesService.areAllFieldsStrings(createOwnerDto, ['id'])) {
       throw new NotFoundException('all fields should be a string');
 
     }
+
+    if (email){
+      const existEmail = await this.checkifIdEmailExist(email);
+      if (existEmail) {
+        throw new NotFoundException('Email already exist');
+      }
+    }
+
     const existIdCardNumber = await this.checkifIdCardNumberExist(idCardNumber);
 
     if (existIdCardNumber) {
@@ -65,32 +70,47 @@ export class ownerService {
     if ('id' in updateOwnerDto) {
       throw new NotFoundException('id cannot be updated');
     }
+    
     const owner = await this.prisma.owner.findUnique({
       where: { id },
     });
 
     if (!owner) {
       throw new NotFoundException('Owner not found');
-    } else {
+    } 
 
-      const { idCardNumber } = updateOwnerDto;
-      const existIdCardNumber = await this.checkifIdCardNumberExist(idCardNumber);
-  
-      if (existIdCardNumber) {
-        throw new NotFoundException('IdCardNumber already exist');
-      }
-
-      await this.prisma.owner.update({
-        where: { id },
-        data: updateOwnerDto,
-      });
-      return { message: 'Owner updated successfully' };
+    const { idCardNumber, email } = updateOwnerDto;
+    const existIdCardNumber = await this.checkifIdCardNumberExist(idCardNumber);
+    if (existIdCardNumber) {
+      throw new NotFoundException('IdCardNumber already exist');
     }
+
+    if (email){
+      const existEmail = await this.checkifIdEmailExist(email);
+      if (existEmail) {
+        throw new NotFoundException('Email already exist');
+      }
+    }
+    await this.prisma.owner.update({
+      where: { id },
+      data: updateOwnerDto,
+    });
+    return { message: 'Owner updated successfully' };
+    
   }
   async checkifIdCardNumberExist(icn: string): Promise<boolean> {
     const existingOwner = await this.prisma.owner.findMany({
       where: {
         idCardNumber: { equals: icn },
+      },
+    });
+
+    return existingOwner.length > 0;
+  }
+  async checkifIdEmailExist(email: string): Promise<boolean> {
+    const existingOwner = await this.prisma.owner.findMany({
+      where: {
+        idCardNumber: { equals: email },
       },
     });
 
