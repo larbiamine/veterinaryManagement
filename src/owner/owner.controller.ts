@@ -4,7 +4,6 @@ import { ownerService } from './owner.service';
 import { CreateOwnerDto } from './dto/create-owner.dto';
 import { UpdateOwnerDto } from './dto/update-owner.dto';
 import { ParseStringPipe } from 'src/pipes/parseString.pipe';
-import { ParseDatePipe } from 'src/pipes/parseDate.pipe';
 
 @Controller('owner')
 export class OwnerController {
@@ -28,22 +27,19 @@ export class OwnerController {
 
     @UseGuards(JwtAuthGuard)
     @Get(':id')
-    findOne(@Param('id', ParseIntPipe)  id:string) {
-      const newId = parseInt(id);
-      return this.ownerService.findOne(newId);
+    findOne(@Param('id', ParseIntPipe)  id:number) {
+      return this.ownerService.findOne(id);
     }
 
     @UseGuards(JwtAuthGuard)
     @Delete(':id')
-    deleteOne(@Param('id', ParseIntPipe) id:string) {
-      const newId = parseInt(id);
-      return this.ownerService.delete(newId);
+    deleteOne(@Param('id', ParseIntPipe) id:number) {
+      return this.ownerService.delete(id);
     }
 
     @UseGuards(JwtAuthGuard)
     @Patch(':id')
-    update(@Param('id', ParseIntPipe) id:string, @Body() updateOwnerDto: UpdateOwnerDto) {
-      const newId = parseInt(id);
-      return this.ownerService.update(newId, updateOwnerDto);
+    update(@Param('id', ParseIntPipe) id:number, @Body() updateOwnerDto: UpdateOwnerDto) {
+      return this.ownerService.update(id, updateOwnerDto);
     }
 }

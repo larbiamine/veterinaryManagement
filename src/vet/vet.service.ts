@@ -15,18 +15,6 @@ export class VetService {
     return vet;
   } 
   async create(createVetDto: CreateVetDto) {
-    const { idCardNumber } = createVetDto;
-    if (!this.utilitiesService.areAllFieldsStrings(createVetDto, ['id'])) {
-      throw new NotFoundException('all fields should be a string');
-
-    }
-
-    const existIdCardNumber = await this.checkifIdCardNumberExist(idCardNumber);
-
-    if (existIdCardNumber) {
-      throw new NotFoundException('IdCardNumber already exist');
-    }
-
     const vet = await this.prisma.vet.create({
       data: createVetDto,
     });
