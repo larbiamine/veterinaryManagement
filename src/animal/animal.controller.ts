@@ -19,9 +19,6 @@ export class AnimalController {
   @UsePipes(new ParseIdIntPipe(['id', "ownerId", "vetId"]))
   @UsePipes(new ParseDatePipe([], 'dateOfBirth'))
   create(@Body() createAnimalDto: CreateAnimalDto) {
-
-    console.log("🆘 || createAnimalDto:", createAnimalDto)
-
     return this.animalService.create(createAnimalDto);
   }
 
@@ -38,6 +35,9 @@ export class AnimalController {
   }
 
   @Patch(':id')
+  @UsePipes(new ParseStringPipe(['id',"ownerId", "vetId", "distinctiveQualities"]))
+  @UsePipes(new ParseIdIntPipe(['id', "ownerId", "vetId"]))
+  @UsePipes(new ParseDatePipe([], 'dateOfBirth'))
   update(@Param('id', ParseIntPipe) id: string, @Body() updateAnimalDto: UpdateAnimalDto) {
     return this.animalService.update(+id, updateAnimalDto);
   }

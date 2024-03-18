@@ -86,7 +86,7 @@ export class VetService {
       return { message: 'Vet updated successfully' };
     }
   }
-  async checkifIdCardNumberExist(icn: string): Promise<boolean> {
+  private async checkifIdCardNumberExist(icn: string): Promise<boolean> {
     const existingVet = await this.prisma.vet.findMany({
       where: {
         idCardNumber: { equals: icn },

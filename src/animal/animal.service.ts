@@ -20,8 +20,17 @@ export class AnimalService {
     return animals;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} animal`;
+  async findOne(id: number) {
+    const animal = await this.prisma.animal.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!animal) {
+      throw new NotFoundException('animal not found');
+    }
+
+    return animal;
   }
 
   async update(findId: number, updateAnimalDto: UpdateAnimalDto) {
@@ -46,7 +55,18 @@ export class AnimalService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} animal`;
+  async remove(id: number) {
+    const animal = await this.prisma.animal.findUnique({
+      where: { id },
+    });
+
+    if (!animal) {
+      throw new NotFoundException('animal not found');
+    } else {
+      await this.prisma.animal.delete({
+        where: { id },
+      });
+      return { message: 'animal deleted successfully' };
+    }
   }
 }
