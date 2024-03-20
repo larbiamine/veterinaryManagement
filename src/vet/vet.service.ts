@@ -65,5 +65,9 @@ export class VetService {
       return { message: 'Vet updated successfully' };
     }
   }
+  async getCount(): Promise<number> {
+    const count = await this.prisma.vet.count();
+    return count;
+  }
 
 }

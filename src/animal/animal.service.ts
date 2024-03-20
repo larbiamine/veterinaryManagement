@@ -69,4 +69,8 @@ export class AnimalService {
       return { message: 'animal deleted successfully' };
     }
   }
+  async getCount(): Promise<number> {
+    const count = await this.prisma.animal.count();
+    return count;
+  }
 }
