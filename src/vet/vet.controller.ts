@@ -17,7 +17,10 @@ export class VetController {
     findAll() {
       return this.vetService.findAll();
     }
-
+    @Get('count')
+    getCount() {
+      return this.vetService.getCount();
+    }
     @UsePipes(new ParseStringPipe(['id']))
     @UseGuards(JwtAuthGuard)
     @Post()
@@ -43,4 +46,6 @@ export class VetController {
       const newId = parseInt(id);
       return this.vetService.update(newId, updateVetDto);
     }
+
+
 }
