@@ -116,4 +116,8 @@ export class ownerService {
 
     return existingOwner.length > 0;
   }
+  async getCount(): Promise<number> {
+    const count = await this.prisma.owner.count();
+    return count;
+  }
 }
