@@ -1,6 +1,6 @@
 // owner.dto.ts
 
-import { IsString, IsInt, IsOptional, IsArray, ValidateNested, IsNotEmpty, IsEmail } from 'class-validator';
+import { IsString, IsInt, IsOptional, IsArray, ValidateNested, IsNotEmpty, IsEmail, IsNumber } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Optional } from '@nestjs/common';
 import { CreateAnimalDto } from 'src/animal/dto/create-animal.dto';
@@ -19,13 +19,12 @@ export class CreateOwnerDto {
   phoneNumber: string;
 
   @IsEmail({}, { message: 'Invalid email format' })
-  @IsNotEmpty({ message: 'email is required' })
   @IsOptional()
   @IsString()
   email?: string;
 
   @IsNotEmpty({ message: 'idCardNumber is required' })
-  @IsString()
+  @IsNumber()
   idCardNumber: string;
 
   @Optional()
