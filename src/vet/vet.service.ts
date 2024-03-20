@@ -58,15 +58,6 @@ export class VetService {
       throw new NotFoundException('Vet not found');
     } else {
 
-      const { idCardNumber } = updateVetDto;
-      // check if idCardNumber is string
-
-      const existIdCardNumber = await this.checkifIdCardNumberExist(idCardNumber);
-  
-      if (existIdCardNumber) {
-        throw new NotFoundException('IdCardNumber already exist');
-      }
-
       await this.prisma.vet.update({
         where: { id },
         data: updateVetDto,
@@ -74,13 +65,5 @@ export class VetService {
       return { message: 'Vet updated successfully' };
     }
   }
-  private async checkifIdCardNumberExist(icn: string): Promise<boolean> {
-    const existingVet = await this.prisma.vet.findMany({
-      where: {
-        idCardNumber: { equals: icn },
-      },
-    });
 
-    return existingVet.length > 0;
-  }
 }
