@@ -1,3 +1,6 @@
+for the frontend
+AdminLTE
+shuffleUI
 
 Owner:<---btw this is a table                                            
     FirstName:                                          
