@@ -90,7 +90,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('Vet not found');
+      throw new NotFoundException('User not found');
     } else {
       await this.prisma.user.update({
         where: { id },
