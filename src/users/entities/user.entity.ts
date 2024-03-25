@@ -17,4 +17,5 @@ export class User extends Document {
 
 export type PrismaUser = Prisma.UserCreateInput;
 
+
 export const UserSchema = SchemaFactory.createForClass(User);

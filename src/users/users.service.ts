@@ -3,6 +3,7 @@ import { CreateUserDto } from '../auth/dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaUser } from './entities/user.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ReturnedUser } from 'src/auth/entities/auth.entity';
 
 @Injectable()
 export class UsersService {
@@ -29,9 +30,10 @@ export class UsersService {
     const user = await this.prisma.user.create({
       data,
     });
-    return user;
+    const { password, ...returnUser } = user;
+    return returnUser;
   }
-  async createAdmin(createUserDto: CreateUserDto) {
+  async createAdmin(createUserDto: CreateUserDto): Promise<ReturnedUser>{
     const { username, email } = createUserDto;
     const existByEmail = await this.checkifEmailExist(email);
     const existByUsername = await this.checkifUsernameExist(username);
@@ -49,7 +51,8 @@ export class UsersService {
     const user = await this.prisma.user.create({
       data,
     });
-    return user;
+    const { password, ...returnAdmin } = user;
+    return returnAdmin;
   }
 
   async findAll(): Promise<PrismaUser[]> {
@@ -87,7 +90,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException('Vet not found');
+      throw new NotFoundException('User not found');
     } else {
       await this.prisma.user.update({
         where: { id },
