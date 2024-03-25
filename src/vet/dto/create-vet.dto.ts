@@ -19,13 +19,9 @@ export class CreateVetDto {
   phoneNumber: string;
 
   @IsEmail({}, { message: 'Invalid email format' })
-  @IsNotEmpty({ message: 'email is required' })
+  @IsOptional()
   @IsString()
   email: string;
-
-  @IsNotEmpty({ message: 'idCardNumber is required' })
-  @IsString({ message: 'idCardNumber should be a string' })
-  idCardNumber: string;
 
   @Optional()
   @IsString()

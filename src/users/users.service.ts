@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from '../auth/dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaUser, User } from './entities/user.entity';
+import { PrismaUser } from './entities/user.entity';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -52,63 +52,72 @@ export class UsersService {
     return user;
   }
 
-  async findAll(): Promise<PrismaUser[]>{
+  async findAll(): Promise<PrismaUser[]> {
     const users = await this.prisma.user.findMany();
 
     return users;
   }
 
-  async findOne(id: string): Promise<User | null> {
-    return null;
+  async findOne(id: number): Promise<PrismaUser | null> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id,
+      },
+    });
+    return user;
   }
   async findByUserName(username: string): Promise<PrismaUser | null> {
     const user = await this.prisma.user.findUnique({
       where: {
-        username: username ,
+        username: username,
       },
     });
     return user;
   }
 
   async update(
-    id: string,
+    id: number,
     updateUserDto: UpdateUserDto,
-  ): Promise<User | string> {
+  ): Promise<PrismaUser | string> {
     if ('id' in updateUserDto) {
       throw new NotFoundException('id cannot be updated');
     }
-    return 'false';
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Vet not found');
+    } else {
+      await this.prisma.user.update({
+        where: { id },
+        data: updateUserDto,
+      });
+      return 'Vet updated successfully';
+    }
   }
 
   async remove(id: number) {
     const user = await this.prisma.user.findUnique({
       where: {
-        id: id ,
+        id: id,
       },
     });
 
-    console.log("🆘 || user:", user)
-    return "removed";
-
-
-
-    try {
+    if (!user) {
+      throw new NotFoundException('user not found');
+    } else {
       await this.prisma.user.delete({
-        where: {
-          id: id ,
-        },
+        where: { id },
       });
-      return `success: user with id ${id} has been deleted`
-    } catch (error) {
-      return `error: user with id ${id} not found`
-    }  
-
+      return { message: 'Vet deleted successfully' };
+    }
   }
 
   async getUserByEmail(email: string): Promise<PrismaUser | null> {
     const user = await this.prisma.user.findUnique({
       where: {
-        email: email ,
+        email: email,
       },
     });
     return user;

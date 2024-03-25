@@ -29,6 +29,12 @@ export class AnimalController {
     return this.animalService.findAll();
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('count')
+  count() {
+    return this.animalService.getCount();
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe)  id:string) {
     return this.animalService.findOne(+id);
