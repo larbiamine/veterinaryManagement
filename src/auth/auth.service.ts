@@ -6,6 +6,7 @@ import {AES, enc} from 'crypto-js';
 import { MyConfigService } from 'src/config/config.service';
 import { MyJwtService } from 'src/jwt/jwt.service';
 import { Prisma } from '@prisma/client';
+import { ReturnedUser } from './entities/auth.entity';
 @Injectable()
 export class AuthService {
     constructor(
@@ -38,14 +39,14 @@ export class AuthService {
     }
 
 
-    async register(createUserDto: CreateUserDto){
+    async register(createUserDto: CreateUserDto): Promise<ReturnedUser>{
         const { password, ...rest } = createUserDto;
         const EncryptionKey = this.configService.getEncryptionKey();
         const encryptedPassword = AES.encrypt(password, EncryptionKey).toString();
         const user = await this.usersService.create({ ...rest, password: encryptedPassword });
         return user;
     }
-    async registerAdmin(createUserDto: CreateUserDto){
+    async registerAdmin(createUserDto: CreateUserDto): Promise<ReturnedUser>{
         const { password, ...rest } = createUserDto;
         const EncryptionKey = this.configService.getEncryptionKey();
         const encryptedPassword = AES.encrypt(password, EncryptionKey).toString();
