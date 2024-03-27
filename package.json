@@ -6,6 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "format-prisma": "prisma format",
+    "merge-models": "cmd /C type prisma\\connector.prisma prisma\\enums\\*.enum.prisma  prisma\\models\\*.model.prisma  > prisma\\schema.prisma && npm run format-prisma",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
