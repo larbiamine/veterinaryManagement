@@ -14,7 +14,7 @@ enum Gender {
 }
 
 model Animal {
-  id                   Int      @id @default(autoincrement())
+  id                   Int           @id @default(autoincrement())
   name                 String
   species              String
   race                 String
@@ -22,21 +22,36 @@ model Animal {
   age                  String
   dateOfBirth          DateTime
   distinctiveQualities String[]
-  owner                Owner?   @relation(fields: [ownerId], references: [id])
+  owner                Owner?        @relation(fields: [ownerId], references: [id])
   ownerId              Int
-  vet                  Vet?     @relation(fields: [vetId], references: [id])
+  vet                  Vet?          @relation(fields: [vetId], references: [id])
   vetId                Int
+  Appointment          Appointment[]
+}
+
+model Appointment {
+  id          Int      @id @default(autoincrement())
+  owner       Owner    @relation(fields: [ownerId], references: [id])
+  ownerId     Int
+  vet         Vet?     @relation(fields: [vetId], references: [id])
+  vetId       Int
+  animal      Animal   @relation(fields: [animalId], references: [id])
+  animalId    Int
+  date        DateTime
+  description String
+  reason      String
 }
 model Owner {
-  id           Int      @id @default(autoincrement())
+  id           Int           @id @default(autoincrement())
   firstName    String
   lastName     String
   phoneNumber  String
-  email        String?  @unique
+  email        String?       @unique
   idCardNumber String
   city         String
   address      String
   animals      Animal[]
+  Appointment  Appointment[]
 }
 model User {
   id        Int     @id @default(autoincrement())
@@ -48,11 +63,12 @@ model User {
   isAdmin   Boolean @default(false)
 }
 model Vet {
-  id          Int      @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   firstName   String
   lastName    String
   phoneNumber String
   city        String
   address     String
   animals     Animal[]
+  Appointment Appointment[]
 }

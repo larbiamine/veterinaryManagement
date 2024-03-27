@@ -9,6 +9,7 @@ import { OwnerModule } from './owner/owner.module';
 import { VetModule } from './vet/vet.module';
 import { UtilitiesModule } from './utilities/utilities.module';
 import { AnimalModule } from './animal/animal.module';
+import { AppointmentModule } from './appointment/appointment.module';
 
 @Module({
   imports: [
