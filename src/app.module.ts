@@ -15,7 +15,6 @@ import { AppointmentModule } from './appointment/appointment.module';
   imports: [
     AuthModule,
     UsersModule,
-    DbModule,
     MyJwtModule,
     PrismaModule,
     OwnerModule,
