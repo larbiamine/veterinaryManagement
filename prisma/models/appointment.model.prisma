@@ -10,4 +10,5 @@ model Appointment {
     date DateTime
     description String
     reason String
+    status AppointmentStatus
 }   
