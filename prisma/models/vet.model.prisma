@@ -1,0 +1,9 @@
+model Vet {
+  id          Int      @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  phoneNumber String
+  city        String
+  address     String
+  animals     Animal[]
+}

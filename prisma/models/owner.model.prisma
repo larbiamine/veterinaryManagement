@@ -1,0 +1,11 @@
+model Owner {
+    id Int @default(autoincrement()) @id
+    firstName String 
+    lastName String
+    phoneNumber String
+    email String? @unique
+    idCardNumber String
+    city String
+    address String
+    animals Animal[] 
+}

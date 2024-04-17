@@ -1,3 +1,6 @@
+dump and restore db
+https://stackoverflow.com/a/59307721
+
 for the frontend
 AdminLTE
 shuffleUI
