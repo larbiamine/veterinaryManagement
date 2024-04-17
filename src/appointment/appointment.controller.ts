@@ -19,6 +19,13 @@ export class AppointmentController {
     getAll() {
         return this.appointmentService.getAll();
     }
+
+    @Get("vet/:vetId")
+    @UseGuards(JwtAuthGuard)
+    getVetAppointments(@Param('vetId', ParseIntPipe) vetId: number,) {
+        return this.appointmentService.getVetAppointments(vetId);
+    }
+
     @Post()
     @UseGuards(JwtAuthGuard)
     @UsePipes(new ParseStringPipe(['id',"ownerId", "vetId", "animalId"]))

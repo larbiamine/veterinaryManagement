@@ -143,4 +143,14 @@ export class AppointmentService {
         const appointments = await this.prisma.appointment.findMany();
         return appointments;
     }
+    async getVetAppointments(vetId: number) {
+
+        const vetAppointments = await this.prisma.appointment.findMany({
+            where: {
+                vetId
+            }
+        });
+
+        return vetAppointments;
+    }
 }
