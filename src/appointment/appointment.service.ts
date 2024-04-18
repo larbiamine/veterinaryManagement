@@ -27,7 +27,9 @@ export class AppointmentService {
             throw new NotFoundException('Animal does not belong to the specified vet');
         }
 
-        if (this.hasAppointment(vetId, date)) {
+        const hasAppointment = await this.hasAppointment(vetId, date);
+
+        if (hasAppointment) {
             throw new NotFoundException('Vet already has an appointment at this time');
 
         }
@@ -125,14 +127,17 @@ export class AppointmentService {
 
     async hasAppointment(vetId: number, date: Date) {
 
-        const appointment = this.prisma.appointment.findFirst({
+        const appointment = await this.prisma.appointment.findFirst({
             where: {
                 vetId,
                 date
             }
         });
 
+        console.log("🆘 || appointment:", appointment)
         if (appointment) {
+
+
             return true;
         } else {
             return false;

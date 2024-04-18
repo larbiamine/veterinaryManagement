@@ -15,10 +15,21 @@ export class VetService {
     return vet;
   } 
   async create(createVetDto: CreateVetDto) {
-    const vet = await this.prisma.vet.create({
-      data: createVetDto,
-    });
-    return vet;
+    try {
+      if ('id' in createVetDto) {
+        delete createVetDto.id;
+      }
+
+      console.log("🆘 || createVetDto:", createVetDto)
+
+      const vet = await this.prisma.vet.create({
+        data: createVetDto,
+      });
+      return vet;
+    } catch (error) {
+      throw new Error(error);
+      
+    }
   }
   async findOne(id: number): Promise<PrismaVet> {
     const vet = await this.prisma.vet.findUnique({
