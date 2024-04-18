@@ -1,11 +1,11 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, UsePipes } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
 import { ParseIdIntPipe } from 'src/pipes/parseInt.pipe';
 import { ParseStringPipe } from 'src/pipes/parseString.pipe';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth/jwt-auth.guard';
 import { ParseDatePipe } from 'src/pipes/parseDate.pipe';
 import { CreateAppointmentDTO } from './dto/create-appointment.dto';
-import { changeDateInput, setStatusInput } from './entities/appointment.entity';
+import { PrismaAppointment, changeDateInput, setStatusInput } from './entities/appointment.entity';
 import { ParseStatusPipe } from 'src/pipes/parseStatus.pipe';
 
 @Controller('appointment')
@@ -18,6 +18,13 @@ export class AppointmentController {
     @UseGuards(JwtAuthGuard)
     getAll() {
         return this.appointmentService.getAll();
+    }
+
+    @Get(':id')
+    @UseGuards(JwtAuthGuard)
+    @UsePipes(new ParseIdIntPipe(['id']))
+    findOne(@Param('id', ParseIntPipe) id: number):Promise<PrismaAppointment | string>{
+        return this.appointmentService.findOne(id);
     }
 
     @Get("vet/:vetId")
@@ -34,6 +41,14 @@ export class AppointmentController {
     create(@Body() createAppointmentDto: CreateAppointmentDTO) {
         return this.appointmentService.create(createAppointmentDto);
     }
+
+    @Delete(':id')
+    @UseGuards(JwtAuthGuard)
+    @UsePipes(new ParseIdIntPipe(['id']))
+    delete(@Param('id', ParseIntPipe) id: number){
+        return this.appointmentService.delete(id);
+    }
+
 
     @Patch('changeDate/:id')
     @UseGuards(JwtAuthGuard)
@@ -53,5 +68,7 @@ export class AppointmentController {
         const { status } = data;
         return this.appointmentService.setStatus(id, status);
     }
+
+
 
 }

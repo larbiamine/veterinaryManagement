@@ -1,6 +1,6 @@
 import { AppointmentStatus, Prisma } from "@prisma/client";
 
-export type PrismaAppointment = Prisma.AppointmentCreateInput;
+export type PrismaAppointment = Prisma.AppointmentUncheckedCreateInput;
 
 export type changeDateInput = {
     date: Date;

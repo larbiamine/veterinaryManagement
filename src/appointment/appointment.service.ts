@@ -2,7 +2,9 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAppointmentDTO } from './dto/create-appointment.dto';
 import { AnimalService } from 'src/animal/animal.service';
-import { AppointmentStatus } from '@prisma/client';
+import {  AppointmentStatus } from '@prisma/client';
+import {  PrismaAppointment } from './entities/appointment.entity';
+import { ReturnMessage } from 'src/Entities/global.entity';
 
 @Injectable()
 export class AppointmentService {
@@ -46,6 +48,37 @@ export class AppointmentService {
             }
         });
         return appointment;
+    }
+
+    async findOne(id:number):Promise<PrismaAppointment | string>{
+        const appointment = await this.prisma.appointment.findUnique({
+            where: {
+                id
+            }
+        });
+        if (!appointment) {
+            throw new NotFoundException('Appointment not found');
+        }
+        return appointment;
+    }
+    async delete(id: number): Promise<ReturnMessage> {
+        const appointment = await this.prisma.appointment.findUnique({
+            where: {
+                id
+            }
+        });
+    
+        if (!appointment) {
+            throw new NotFoundException('Appointment not found');
+        }
+    
+        await this.prisma.appointment.delete({
+            where: {
+                id
+            }
+        });
+    
+        return { message: 'Appointment deleted successfully' };
     }
 
     async setStatus(appointmentId: number, status: AppointmentStatus) {
