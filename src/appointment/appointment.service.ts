@@ -5,6 +5,7 @@ import { AnimalService } from 'src/animal/animal.service';
 import {  AppointmentStatus } from '@prisma/client';
 import {  PrismaAppointment } from './entities/appointment.entity';
 import { ReturnMessage } from 'src/Entities/global.entity';
+import { addDays } from 'date-fns';
 
 @Injectable()
 export class AppointmentService {
@@ -79,6 +80,31 @@ export class AppointmentService {
         });
     
         return { message: 'Appointment deleted successfully' };
+    }
+
+    async getAppointmentsByDate(date: Date):Promise<PrismaAppointment[] | string> {
+
+        const nextDay = addDays(date, 1);
+
+        try {
+            const appointments = await this.prisma.appointment.findMany({
+                where: {
+                    date:{
+                        gte: date,
+                        lt: nextDay,                    
+                    }
+                }
+            });
+    
+            if (!appointments || appointments.length === 0) {
+                throw new NotFoundException('No appointments found for the specified date');
+            }
+    
+            return appointments;
+            
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 
     async setStatus(appointmentId: number, status: AppointmentStatus) {
@@ -190,5 +216,35 @@ export class AppointmentService {
         });
 
         return vetAppointments;
+    }
+    async getOwnerAppointments(ownerId: number) {
+
+        const ownerAppointments = await this.prisma.appointment.findMany({
+            where: {
+                ownerId
+            }
+        });
+
+        return ownerAppointments;
+    }
+    async getAnimalAppointments(animalId: number) {
+
+        const animalAppointments = await this.prisma.appointment.findMany({
+            where: {
+                animalId
+            }
+        });
+
+        return animalAppointments;
+    }
+    async getAppointmentsByStatus(status: AppointmentStatus) {
+
+        const appointments = await this.prisma.appointment.findMany({
+            where: {
+                status
+            }
+        });
+
+        return appointments;
     }
 }
