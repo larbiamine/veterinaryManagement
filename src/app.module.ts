@@ -10,7 +10,7 @@ import { VetModule } from './vet/vet.module';
 import { UtilitiesModule } from './utilities/utilities.module';
 import { AnimalModule } from './animal/animal.module';
 import { AppointmentModule } from './appointment/appointment.module';
-
+import { SchedulesModule } from './schedules/schedules.module';
 @Module({
   imports: [
     AuthModule,
@@ -22,6 +22,7 @@ import { AppointmentModule } from './appointment/appointment.module';
     UtilitiesModule,
     AnimalModule,
     AppointmentModule,
+    SchedulesModule
   ],
   controllers: [AppController],
   providers: [AppService],
