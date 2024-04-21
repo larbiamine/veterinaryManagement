@@ -106,6 +106,30 @@ export class AppointmentService {
             throw new Error(error);
         }
     }
+    async getAppointmentsByDateInterval(startDate: Date, endDate: Date):Promise<PrismaAppointment[] | string> {
+
+        const endDatePlusOne = addDays(endDate, 1);
+
+        try {
+            const appointments = await this.prisma.appointment.findMany({
+                where: {
+                    date:{
+                        gte: startDate,
+                        lt: endDatePlusOne,                    
+                    }
+                }
+            });
+    
+            if (!appointments || appointments.length === 0) {
+                throw new NotFoundException('No appointments found for the specified date');
+            }
+    
+            return appointments;
+            
+        } catch (error) {
+            throw new Error(error);
+        }
+    }
 
     async setStatus(appointmentId: number, status: AppointmentStatus) {
         

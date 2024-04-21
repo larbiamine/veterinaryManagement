@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards, UsePipes } from '@nestjs/common';
 import { AppointmentService } from './appointment.service';
 import { ParseIdIntPipe } from 'src/pipes/parseInt.pipe';
 import { ParseStringPipe } from 'src/pipes/parseString.pipe';
@@ -21,19 +21,25 @@ export class AppointmentController {
     getAll() {
         return this.appointmentService.getAll();
     }
+    @Get('date/:date')
+    @UseGuards(JwtAuthGuard)
+    @UsePipes(new ParseDatePipe())
+    getAppointmentsByDate(@Param('date') date: Date):Promise<PrismaAppointment[] | string> {
+        return this.appointmentService.getAppointmentsByDate(date);
+    }
+    
+    @Get('dateinterval')
+    @UseGuards(JwtAuthGuard)
+    @UsePipes(new ParseDatePipe())
+    getAppointmentsByDateInterval(@Query('startdate') startdate: Date, @Query('enddate') enddate:Date):Promise<PrismaAppointment[] | string> {
+        return this.appointmentService.getAppointmentsByDateInterval(startdate, enddate);
+    }
 
     @Get(':id')
     @UseGuards(JwtAuthGuard)
     @UsePipes(new ParseIdIntPipe(['id']))
     findOne(@Param('id', ParseIntPipe) id: number):Promise<PrismaAppointment | string>{
         return this.appointmentService.findOne(id);
-    }
-
-    @Get('date/:date')
-    @UseGuards(JwtAuthGuard)
-    @UsePipes(new ParseDatePipe())
-    getAppointmentsByDate(@Param('date') date: Date):Promise<PrismaAppointment[] | string> {
-        return this.appointmentService.getAppointmentsByDate(date);
     }
 
 
