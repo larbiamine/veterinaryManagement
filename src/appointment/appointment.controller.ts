@@ -32,7 +32,7 @@ export class AppointmentController {
     @UseGuards(JwtAuthGuard)
     @UsePipes(new ParseDatePipe())
     getAppointmentsByDateInterval(@Query('startdate') startdate: Date, @Query('enddate') enddate:Date):Promise<PrismaAppointment[] | string> {
-        return this.appointmentService.getAppointmentsByDateInterval(startdate, enddate);
+        return this.appointmentService.getAppointmentsByDateInterval(startdate, enddate, []);
     }
 
     @Get(':id')

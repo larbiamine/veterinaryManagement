@@ -8,7 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { AnimalService } from 'src/animal/animal.service';
 
 @Module({
-  imports: [ MyJwtModule, UtilitiesModule, PrismaModule ],
+  imports: [ MyJwtModule, UtilitiesModule, PrismaModule,  ],
 
   controllers: [AppointmentController],
   providers: [AppointmentService, PrismaService, AnimalService]
