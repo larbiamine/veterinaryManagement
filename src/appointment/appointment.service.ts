@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAppointmentDTO } from './dto/create-appointment.dto';
 import { AnimalService } from 'src/animal/animal.service';
 import {  AppointmentStatus } from '@prisma/client';
-import {  PrismaAppointment } from './entities/appointment.entity';
+import {  PrismaAppointment, PrismaAppointmentWithInfo } from './entities/appointment.entity';
 import { ReturnMessage } from 'src/Entities/global.entity';
 import { addDays } from 'date-fns';
 
@@ -153,7 +153,7 @@ export class AppointmentService {
     startDate: Date,
     endDate: Date,
     status: Array<AppointmentStatus>,
-  ): Promise<PrismaAppointment[] | string> {
+  ): Promise<PrismaAppointmentWithInfo[]> {
     if (status.length === 0) {
       status = Object.values(AppointmentStatus);
     }
@@ -188,14 +188,14 @@ export class AppointmentService {
             },
           },
       });
-
+      
       if (!appointments) {
         throw new NotFoundException(
           'No appointments found for the specified date',
-        );
-      }
-
-      return appointments;
+          );
+        }
+        return appointments;
+        
     } catch (error) {
       throw new Error(error);
     }

@@ -13,31 +13,38 @@ export class AppointmentTasks {
   ) {}
 
 
-  @Cron(CustomCronExpression.EVERY_SECOND)
-  // @Cron(CustomCronExpression.THURSDAY_1600)
+  // @Cron(CustomCronExpression.EVERY_SECOND)
+  @Cron(CustomCronExpression.THURSDAY_1600)
   async upcomingAppointments() {
-    let today = new Date();
-    let nextWeek = new Date();
+    const today = new Date();
+    const nextWeek = new Date();
     nextWeek.setDate(today.getDate() + 7);
-
+    const  status = [
+      AppointmentStatus.SCHEDULED, 
+      AppointmentStatus.RESCHEDULED
+    ]
     const appointments =
       await this.appointmentService.getAppointmentsByDateIntervalWithOwnerAndVet(
         today,
         nextWeek,
-        [AppointmentStatus.SCHEDULED, AppointmentStatus.RESCHEDULED],
+        status,
       );
 
-      const appointmentsWithRenamedEmails = appointments.map(appointment => ({
-        ...appointment,
-        ownerId: appointment.owner?.id,
-        ownerFirstName: appointment.owner?.firstName,
-        ownerLastName: appointment.owner?.lastName,
-        ownerEmail: appointment.owner?.email,
-        vetEmail: appointment.vet?.email,
-        // Add other fields of the appointment entity as needed
-      }));
+      const appointmentsWithRenamedEmails = appointments.map((appointment) => {
+        const { owner, vet, ...appointmentWithoutOwnerAndVet } = appointment;
+        return {
+          ...appointmentWithoutOwnerAndVet,
+          ownerFirstName: appointment.owner?.firstName,
+          ownerLastName: appointment.owner?.lastName,
+          vetFirstName: appointment.vet?.firstName,
+          vetLastName: appointment.vet?.lastName,
+          ownerEmail: appointment.owner?.email,
+          vetEmail: appointment.vet?.email,
+          // Add other fields of the appointment entity as needed
+        };
+      });
 
-    this.utilitiesService.customConsoleTable(appointments, 10);
+    this.utilitiesService.customConsoleTable(appointmentsWithRenamedEmails, 5);
     
   }
 }
