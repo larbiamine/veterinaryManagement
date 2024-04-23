@@ -3,248 +3,331 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAppointmentDTO } from './dto/create-appointment.dto';
 import { AnimalService } from 'src/animal/animal.service';
 import {  AppointmentStatus } from '@prisma/client';
-import {  PrismaAppointment } from './entities/appointment.entity';
+import {  PrismaAppointment, PrismaAppointmentWithInfo } from './entities/appointment.entity';
 import { ReturnMessage } from 'src/Entities/global.entity';
 import { addDays } from 'date-fns';
 
 @Injectable()
 export class AppointmentService {
-    constructor(
-        private prisma: PrismaService,
-        private readonly animalService: AnimalService,
-    ) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly animalService: AnimalService,
+  ) {}
 
-    async create(createAppointmentDto: CreateAppointmentDTO) {
-        const {status, ownerId, vetId, animalId, date, description, reason} = createAppointmentDto;
+  async create(createAppointmentDto: CreateAppointmentDTO) {
+    const { status, ownerId, vetId, animalId, date, description, reason } =
+      createAppointmentDto;
 
-        const animal = await this.animalService.findOne(animalId);
+    const animal = await this.animalService.findOne(animalId);
 
-        if (!animal) {
-            throw new NotFoundException('Animal not found');
-        }
-
-        if (animal.ownerId !== ownerId) {
-            throw new NotFoundException('Animal does not belong to the specified owner ');
-        }
-        if ( animal.vetId !== vetId) {
-            throw new NotFoundException('Animal does not belong to the specified vet');
-        }
-
-        const hasAppointment = await this.hasAppointment(vetId, date);
-
-        if (hasAppointment) {
-            throw new NotFoundException('Vet already has an appointment at this time');
-
-        }
-
-        const appointment = await this.prisma.appointment.create({
-            data: {
-                ownerId,
-                vetId,
-                animalId,
-                date,
-                description,
-                reason,
-                status
-            }
-        });
-        return appointment;
+    if (!animal) {
+      throw new NotFoundException('Animal not found');
     }
 
-    async findOne(id:number):Promise<PrismaAppointment | string>{
-        const appointment = await this.prisma.appointment.findUnique({
-            where: {
-                id
-            }
-        });
-        if (!appointment) {
-            throw new NotFoundException('Appointment not found');
-        }
-        return appointment;
+    if (animal.ownerId !== ownerId) {
+      throw new NotFoundException(
+        'Animal does not belong to the specified owner ',
+      );
     }
-    async delete(id: number): Promise<ReturnMessage> {
-        const appointment = await this.prisma.appointment.findUnique({
-            where: {
-                id
-            }
-        });
-    
-        if (!appointment) {
-            throw new NotFoundException('Appointment not found');
-        }
-    
-        await this.prisma.appointment.delete({
-            where: {
-                id
-            }
-        });
-    
-        return { message: 'Appointment deleted successfully' };
+    if (animal.vetId !== vetId) {
+      throw new NotFoundException(
+        'Animal does not belong to the specified vet',
+      );
     }
 
-    async getAppointmentsByDate(date: Date):Promise<PrismaAppointment[] | string> {
+    const hasAppointment = await this.hasAppointment(vetId, date);
 
-        const nextDay = addDays(date, 1);
-
-        try {
-            const appointments = await this.prisma.appointment.findMany({
-                where: {
-                    date:{
-                        gte: date,
-                        lt: nextDay,                    
-                    }
-                }
-            });
-    
-            if (!appointments || appointments.length === 0) {
-                throw new NotFoundException('No appointments found for the specified date');
-            }
-    
-            return appointments;
-            
-        } catch (error) {
-            throw new Error(error);
-        }
+    if (hasAppointment) {
+      throw new NotFoundException(
+        'Vet already has an appointment at this time',
+      );
     }
 
-    async setStatus(appointmentId: number, status: AppointmentStatus) {
+    const appointment = await this.prisma.appointment.create({
+      data: {
+        ownerId,
+        vetId,
+        animalId,
+        date,
+        description,
+        reason,
+        status,
+      },
+    });
+    return appointment;
+  }
+
+  async findOne(id: number): Promise<PrismaAppointment | string> {
+    const appointment = await this.prisma.appointment.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!appointment) {
+      throw new NotFoundException('Appointment not found');
+    }
+    return appointment;
+  }
+  async delete(id: number): Promise<ReturnMessage> {
+    const appointment = await this.prisma.appointment.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!appointment) {
+      throw new NotFoundException('Appointment not found');
+    }
+
+    await this.prisma.appointment.delete({
+      where: {
+        id,
+      },
+    });
+
+    return { message: 'Appointment deleted successfully' };
+  }
+
+  async getAppointmentsByDate(
+    date: Date,
+  ): Promise<PrismaAppointment[] | string> {
+    const nextDay = addDays(date, 1);
+
+    try {
+      const appointments = await this.prisma.appointment.findMany({
+        where: {
+          date: {
+            gte: date,
+            lt: nextDay,
+          },
+        },
+      });
+
+      if (!appointments || appointments.length === 0) {
+        throw new NotFoundException(
+          'No appointments found for the specified date',
+        );
+      }
+
+      return appointments;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+  async getAppointmentsByDateInterval(
+    startDate: Date,
+    endDate: Date,
+    status: Array<AppointmentStatus>,
+  ): Promise<PrismaAppointment[] | string> {
+    if (status.length === 0) {
+      status = Object.values(AppointmentStatus);
+    }
+
+    const endDatePlusOne = addDays(endDate, 1);
+
+    try {
+      const appointments = await this.prisma.appointment.findMany({
+        where: {
+          date: {
+            gte: startDate,
+            lt: endDatePlusOne,
+          },
+          status: {
+            in: status,
+          },
+        },
+      });
+
+      if (!appointments) {
+        throw new NotFoundException(
+          'No appointments found for the specified date',
+        );
+      }
+
+      return appointments;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+  async getAppointmentsByDateIntervalWithOwnerAndVet(
+    startDate: Date,
+    endDate: Date,
+    status: Array<AppointmentStatus>,
+  ): Promise<PrismaAppointmentWithInfo[]> {
+    if (status.length === 0) {
+      status = Object.values(AppointmentStatus);
+    }
+
+    const endDatePlusOne = addDays(endDate, 1);
+
+    try {
+      const appointments = await this.prisma.appointment.findMany({
+        where: {
+          date: {
+            gte: startDate,
+            lt: endDatePlusOne,
+          },
+          status: {
+            in: status,
+          },
+        },
+        include: {
+            owner: {
+              select: {
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+            vet: {
+              select: {
+                firstName: true,
+                lastName: true,
+                email: true,
+              },
+            },
+          },
+      });
+      
+      if (!appointments) {
+        throw new NotFoundException(
+          'No appointments found for the specified date',
+          );
+        }
+        return appointments;
         
-        const appointment = await this.prisma.appointment.findUnique({
-            where: {
-                id: appointmentId
-            }
-        });
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
 
-        if (!appointment) {
-            throw new NotFoundException('Appointment not found');
-        }
+  async setStatus(appointmentId: number, status: AppointmentStatus) {
+    const appointment = await this.prisma.appointment.findUnique({
+      where: {
+        id: appointmentId,
+      },
+    });
 
-        try {
-            
-            await this.prisma.appointment.update({
-                where: {
-                    id: appointmentId
-                },
-                data: {
-                    status
-                }
-            });
-    
-            return { message: 'Appointment status updated successfully' };
-        } catch (error) {
-            return { message: 'Error occured while setting status' };
-        }
-
+    if (!appointment) {
+      throw new NotFoundException('Appointment not found');
     }
 
-    async changeDate(appointmentId: number, date: Date) {
-        const appointment = await this.prisma.appointment.findUnique({
-            where: {
-                id: appointmentId
-            }
-        });
+    try {
+      await this.prisma.appointment.update({
+        where: {
+          id: appointmentId,
+        },
+        data: {
+          status,
+        },
+      });
 
-        if (!appointment) {
-            throw new NotFoundException('Appointment not found');
-        }
+      return { message: 'Appointment status updated successfully' };
+    } catch (error) {
+      return { message: 'Error occured while setting status' };
+    }
+  }
 
-        await this.prisma.appointment.update({
-            where: {
-                id: appointmentId
-            },
-            data: {
-                date
-            }
-        });
+  async changeDate(appointmentId: number, date: Date) {
+    const appointment = await this.prisma.appointment.findUnique({
+      where: {
+        id: appointmentId,
+      },
+    });
 
-        return { message: 'Appointment date updated successfully' };
+    if (!appointment) {
+      throw new NotFoundException('Appointment not found');
     }
 
-    async changeVet(appointmentId: number, vetId: number) {
-    
-        const appointment = await this.prisma.appointment.findUnique({
-            where: {
-                id: appointmentId
-            }
-        });
+    await this.prisma.appointment.update({
+      where: {
+        id: appointmentId,
+      },
+      data: {
+        date,
+      },
+    });
 
-        if (!appointment) {
-            throw new NotFoundException('Appointment not found');
-        }
+    return { message: 'Appointment date updated successfully' };
+  }
 
-        await this.prisma.appointment.update({
-            where: {
-                id: appointmentId
-            },
-            data: {
-                vetId
-            }
-        });
+  async changeVet(appointmentId: number, vetId: number) {
+    const appointment = await this.prisma.appointment.findUnique({
+      where: {
+        id: appointmentId,
+      },
+    });
 
-        return { message: 'Appointment vet updated successfully' };
+    if (!appointment) {
+      throw new NotFoundException('Appointment not found');
     }
 
-    async hasAppointment(vetId: number, date: Date) {
+    await this.prisma.appointment.update({
+      where: {
+        id: appointmentId,
+      },
+      data: {
+        vetId,
+      },
+    });
 
-        const appointment = await this.prisma.appointment.findFirst({
-            where: {
-                vetId,
-                date
-            }
-        });
+    return { message: 'Appointment vet updated successfully' };
+  }
 
-        console.log("🆘 || appointment:", appointment)
-        if (appointment) {
+  async hasAppointment(vetId: number, date: Date) {
+    const appointment = await this.prisma.appointment.findFirst({
+      where: {
+        vetId,
+        date,
+      },
+    });
 
-
-            return true;
-        } else {
-            return false;
-        }
+    console.log('🆘 || appointment:', appointment);
+    if (appointment) {
+      return true;
+    } else {
+      return false;
     }
+  }
 
-    async getAll() {
-        const appointments = await this.prisma.appointment.findMany();
-        return appointments;
-    }
-    async getVetAppointments(vetId: number) {
+  async getAll() {
+    const appointments = await this.prisma.appointment.findMany();
+    return appointments;
+  }
+  async getVetAppointments(vetId: number) {
+    const vetAppointments = await this.prisma.appointment.findMany({
+      where: {
+        vetId,
+      },
+    });
 
-        const vetAppointments = await this.prisma.appointment.findMany({
-            where: {
-                vetId
-            }
-        });
+    return vetAppointments;
+  }
+  async getOwnerAppointments(ownerId: number) {
+    const ownerAppointments = await this.prisma.appointment.findMany({
+      where: {
+        ownerId,
+      },
+    });
 
-        return vetAppointments;
-    }
-    async getOwnerAppointments(ownerId: number) {
+    return ownerAppointments;
+  }
+  async getAnimalAppointments(animalId: number) {
+    const animalAppointments = await this.prisma.appointment.findMany({
+      where: {
+        animalId,
+      },
+    });
 
-        const ownerAppointments = await this.prisma.appointment.findMany({
-            where: {
-                ownerId
-            }
-        });
+    return animalAppointments;
+  }
+  async getAppointmentsByStatus(status: AppointmentStatus) {
+    const appointments = await this.prisma.appointment.findMany({
+      where: {
+        status,
+      },
+    });
 
-        return ownerAppointments;
-    }
-    async getAnimalAppointments(animalId: number) {
-
-        const animalAppointments = await this.prisma.appointment.findMany({
-            where: {
-                animalId
-            }
-        });
-
-        return animalAppointments;
-    }
-    async getAppointmentsByStatus(status: AppointmentStatus) {
-
-        const appointments = await this.prisma.appointment.findMany({
-            where: {
-                status
-            }
-        });
-
-        return appointments;
-    }
+    return appointments;
+  }
 }

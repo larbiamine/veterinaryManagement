@@ -3,6 +3,7 @@ model Vet {
   firstName   String
   lastName    String
   phoneNumber String
+  email       String  @default("defaultVet@email.com")
   city        String
   address     String
   animals     Animal[]
