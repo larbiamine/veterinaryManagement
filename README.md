@@ -1,5 +1,4 @@
-
-# Veterinary Management System (Work in Progress)
+# Veterinary Management System (WIP)
 
 This repository contains the source code for a comprehensive veterinary management system backend developed using NestJS. The application aims to offer a robust solution for managing various aspects of a veterinary clinic, including appointment scheduling, patient records, and more. Please note that some features such as Treatment Management and Inventory Management are still under development.
 
@@ -23,27 +22,26 @@ This repository contains the source code for a comprehensive veterinary manageme
 
 To run the veterinary management system backend locally, follow these steps:
 
-1. **Clone the Repository**: 
-    ```
-    git clone https://github.com/your_username/veterinary-management-system.git
-    ```
+1. **Clone the Repository**:
 
-2. **Install Dependencies**: 
-    ```
-    cd veterinary-management-system
-    npm install
-    ```
+   ```
+   git clone https://github.com/your_username/veterinary-management-system.git
+   ```
+2. **Install Dependencies**:
 
-3. **Set Environment Variables**: 
-    Create a `.env` file in the root directory and configure environment variables such as database connection details, JWT secret, etc.
+   ```
+   cd veterinary-management-system
+   npm install
+   ```
+3. **Set Environment Variables**:
+   Create a `.env` file in the root directory and configure environment variables such as database connection details, JWT secret, etc.
+4. **Run the Application**:
 
-4. **Run the Application**: 
-    ```
-    npm start
-    ```
-
-5. **Access the Application**: 
-    Once the application is running, you can access its endpoints through API requests.
+   ```
+   npm start
+   ```
+5. **Access the Application**:
+   Once the application is running, you can access its endpoints through API requests.
 
 ## Contributing
 
@@ -58,4 +56,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Contact
 
 For questions or inquiries about the veterinary management system, feel free to contact us at `your_email@example.com`. We'd love to hear from you!
-
