@@ -34,8 +34,6 @@ export class AuthService {
         return {
             token: await this.myJwtService.generateToken(payload)
         };
-
-
     }
 
 

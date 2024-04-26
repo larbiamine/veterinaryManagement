@@ -7,7 +7,9 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalFilters(new PrismaForeignKeyExceptionFilter());
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({
+    skipMissingProperties: false // Ensure validation of all properties
+  }));
   await app.listen(3000);
 }
 bootstrap();

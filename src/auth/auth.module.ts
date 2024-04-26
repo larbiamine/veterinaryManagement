@@ -10,7 +10,6 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
   imports: [UsersModule, MyConfigModule, MyJwtModule],
-  // include UsersModule in the imports array
   controllers: [AuthController],
   providers: [AuthService, UsersService, LocalStrategy, PrismaService],
   exports: [AuthService],
